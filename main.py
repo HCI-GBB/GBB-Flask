@@ -1,8 +1,8 @@
 import json
-from flask import Flask, request, current_app
+from flask import Flask, current_app
 from collections import OrderedDict
 
-from muse import get_result
+from muse import get_interest, get_focus
 
 app = Flask(__name__)
 
@@ -16,8 +16,10 @@ def api_response(status, message, data):
 @app.route('/api/v1/csv', methods=['GET'])
 def post_result():
     try:
-        top, order = get_result()
-        return api_response(200, "취미 결과 도출 성공", {"top": top, "order": order}), 200
+        top, interest, interest_percent = get_interest()
+        focus, focus_percent = get_focus()
+        return api_response(200, "취미 결과 도출 성공",
+                            {"top": top, "interest": interest, "interest_percent": interest_percent, "focus": focus, "focus_percent": focus_percent}), 200
     except Exception as e:
         print("Something is wrong!!", e)
         return api_response(500, "Internal Server Error", str(e)), 500
